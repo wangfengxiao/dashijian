@@ -63,47 +63,43 @@
 <!-- 导入bs的js -->
 <script src="./js/bootstrap/js/bootstrap.min.js"></script>
 <script>
-  /*
-    功能分析：
-      1 对输入框的内容进行检测，不能为空，如果为空进行提示
-        - .input_txt  .input_pass 
-      2 将用户名和密码发送给接口进行检测 .input-sub
-        - 2.1 登录成功（admin和123456），跳转到index.html
-        - 2.2 登录失败，提示用户
-  */
+// input_txt   input_pass     input_sub 
 
-  $('.input_sub').on('click', function (e) {
-    // 阻止默认的提交
-    e.preventDefault();
+$('.input_sub').on('click',function(e) {
 
-    // 检测内容是否为空(失败检测)
-    if ($('.input_txt').val() === '' || $('.input_pass').val() === '') {
-      // 通过设置的模态框将提示信息展示
-      $('.modal-body').text('内容没有填写完毕');
-      $('#myModal').modal();
-      return;
+  e.preventDefault();
+  
+if($('.input_txt').val() ===' '  ||  $('.input_pass').val()===' ') {
+  // alert('输入的内容不能为空')
+  $('.modal-body').text('内容不能为空');
+  $('#myModal').modal();
+  return;
+}
+
+
+$.post( {
+  url:'https://autumnfish.cn/big/admin/login',
+  data:{
+    uesr_name: $('.input_txt').val(),
+    password : $('.input_pass').val(),
+  },
+
+  success: function(res) {
+
+    if(res.code === 200) {
+      location.href='index.html';
+    }else if (res.code === 400) {
+      $('.modal-body').text('用户名或者密码错误');
+       $('#myModal').modal();
     }
 
-    // 将用户名和密码提交给接口
-    $.post({
-      url : 'https://autumnfish.cn/big/admin/login',
-      data : {
-        user_name : $('.input_txt').val(),
-        password : $('.input_pass').val()
-      },
-      success : function (res) {
-        // 检测登录是否成功
-        if (res.code === 200) {
-          // 跳转到index.html
-          location.href = 'index.html';
-        } else if (res.code === 400) {
-          // 通过模态框显示提示信息
-          $('.modal-body').text('用户名或密码错误');
-          $('#myModal').modal();
-        }
-      }
-    });
-  });
+
+  }
+})
+
+
+
+})
 
 
 </script>
